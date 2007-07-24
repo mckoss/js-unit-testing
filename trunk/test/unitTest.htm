@@ -1,0 +1,120 @@
+<HTML>
+<title>unit.js Unit Test (ow)</title>
+<SCRIPT SRC="../script/base.js"></SCRIPT>
+<SCRIPT SRC="../script/timer.js"></SCRIPT>
+<SCRIPT SRC="../script/unit.js"></SCRIPT>
+<HEAD>
+<SCRIPT>
+function Sample()
+{
+	this.x = 1;
+}
+
+Sample.prototype.Double = function()
+{
+	this.x *= 2;
+}
+
+</SCRIPT>
+</HEAD>
+<BODY>
+<h1><script>document.write(document.title);</script></h1>
+<SCRIPT>
+ts = new mckoss.TestSuite();
+ts.DWOutputDiv();
+</script>
+<SCRIPT src="../libraries/firebug/firebug.js"></SCRIPT>
+<script>
+ts.AddTest("Single Failure", function(ut)
+{
+	ut.Assert(true, "true is true");
+	ut.Assert(false, "this one should fail!");
+}).Expect(1,2);
+
+ts.AddTest("Never Run", function(ut)
+{
+	ut.Assert(false, "Disable a failing test.");
+}).Enable(false).Expect(1,1).Reference("http://mckoss.com");
+
+ts.AddTest("All Pass", function(ut)
+{
+	var s = new Sample();
+	ut.Assert(s.x == 1, "Constructor");
+	s.Double();
+	ut.Assert(s.x == 2, "Double Test 1");
+	s.x = 10;
+	s.Double();
+	ut.Assert(s.x == 20, "Double Test 2");
+	ut.AssertEval("1+1==2");
+	ut.AssertGT(2, 1);
+	ut.AssertGT("Z", "A");
+}).Expect(0,6);
+
+ts.AddTest("All Fail", function(ut)
+{
+	ut.Assert(false);
+	ut.AssertEval("1+1 == 3");
+	ut.AssertEq(1, 2);
+	ut.AssertNEq("hello", "hello");
+	ut.AssertGT(1, 2);
+	ut.AssertGT(undefined, 2);
+	ut.AssertGT("A", "Z");
+	var x = 7;
+	ut.AssertFn(function () { return x != 7; });
+	ut.AssertFn(new Function);
+	ut.AssertFn(function () { });
+	IllegalFunction();
+}).Expect(11,11);
+
+var utNA = ts.AddTest("No Asserts Asynch", function(ut)
+{
+}).Async(true);
+
+ts.AddTest("Script error expected", function(ut)
+{
+	IllegalFunction();
+}).Throws(mckoss.Browser.fIE ? "TypeError" : "ReferenceError").Expect(0,1);
+
+ts.AddTest("Some exception expected", function(ut)
+{
+	IllegalFunction();
+}).Throws().Expect(0,1);
+
+ts.AddTest("no exception", function(ut)
+{
+	ut.Assert(true);
+}).Throws().Expect(1,2);
+
+ts.AddTest("Fails: Wrong exception", function(ut)
+{
+	throw new Error("the wrong exception");
+}).Throws("ReferenceError").Expect(1,1);
+
+ts.AddTest("Multiple Exceptions", function(ut)
+{
+	try { IllegalFunction(); }
+	catch (e) { ut.AssertException(e, mckoss.Browser.fIE ? "TypeError" : "ReferenceError"); }
+
+	try { throw new Error("Custom exception"); }
+	catch (e) { ut.AssertException(e); }
+
+	try { throw new Error("Custom exception"); }
+	catch (e) { ut.AssertException(e, "Custom"); }
+
+	try { throw new Error("Custom exception"); }
+	catch (e) { ut.AssertException(e, mckoss.Browser.fIE ? "TypeError" : "ReferenceError"); }
+}).Expect(1,4);
+
+ts.AddSubTest("passes.htm").Expect(0,1);
+ts.AddSubTest("fails.htm").Expect(1,1);
+
+ts.Run();
+ts.AddTest("Post Run Test", function(ut) {}).Expect(0,0);
+ts.ReportAsync();
+window.setInterval(function() { utNA.Async(false); }, 7000);
+
+
+</SCRIPT>
+</BODY>
+</HTML>
+

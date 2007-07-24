@@ -1,0 +1,145 @@
+<HTML>
+<HEAD>
+<title>timer.js Unit Tests</title>
+<SCRIPT SRC="../script/base.js"></SCRIPT>
+<SCRIPT SRC="../script/timer.js"></SCRIPT>
+<SCRIPT SRC="../script/unit.js"></SCRIPT>
+<SCRIPT src="../libraries/firebug/firebug.js"></SCRIPT>
+</HEAD>
+<BODY>
+<h1><script>document.write(document.title);</script></h1>
+<SCRIPT>
+var ts = new mckoss.TestSuite();
+ts.DWOutputDiv();
+ts.AddTest("One Shot", function(ut)
+{
+	var c = 0;
+
+	new mckoss.Timer(Test, 100).Active();
+	new mckoss.Timer(EndTest, 1000).Active();
+
+	function Test()
+	{
+		c++;
+		ut.Assert(c == 1, "Multiple calls to oneshot timer.");
+	}
+
+	function EndTest()
+	{
+		ut.Async(false);
+	}
+}).Async().Expect(0,1);
+
+ts.AddTest("Sequential Accuracy", function(ut)
+{
+	function Measure(iTest)
+	{
+		this.mst = new mckoss.MSTimer;
+		this.iTest = iTest
+	}
+
+	Measure.prototype.Start = function()
+	{
+		this.msTest = 250*this.iTest;
+		this.mst.Reset().Start();
+		this.tm = new mckoss.Timer(this.End.FnCallback(this), this.msTest).Active();
+	}
+
+	Measure.prototype.End = function()
+	{
+		this.mst.Stop();
+		ut.Assert(this.mst.ms > (this.msTest*0.9) && this.mst.ms < (this.msTest*1.1),
+			"Timer accuracy " + this.mst.ms + " vs. " + this.msTest + " " +
+			Math.floor(this.mst.ms/this.msTest*100) + "%");
+		if (--this.iTest > 0)
+			this.Start();
+		else
+			ut.Async(false);
+	}
+
+	var m = new Measure(10);
+	m.Start();
+}).Async().Enable(true).Expect(0,10);
+
+ts.AddTest("Concurrent Accuracy", function(ut)
+{
+	function Measure(iTest)
+	{
+		this.mst = new mckoss.MSTimer;
+		this.iTest = iTest;
+		return this;
+	}
+
+	Measure.prototype.Start = function()
+	{
+		this.msTest = 250*this.iTest;
+		this.mst.Reset().Start();
+		this.tm = new mckoss.Timer(this.End.FnCallback(this), this.msTest).Active();
+	}
+
+	Measure.prototype.End = function()
+	{
+		this.mst.Stop();
+		ut.Assert(this.mst.ms > (this.msTest*0.9) && this.mst.ms < (this.msTest*1.1),
+			"Timer accuracy " + this.mst.ms + " vs. " + this.msTest + " " +
+			Math.floor(this.mst.ms/this.msTest*100) + "%");
+	}
+
+    var i;
+	for (i = 1; i <= 10; i++)
+		new Measure(i).Start();
+
+	new mckoss.Timer(function () { ut.Async(false); }, 2000).Active();
+
+}).Async().Expect(0,10);
+
+ts.AddTest("Repeat", function(ut)
+{
+	var c = 20;
+	var tm = new mckoss.Timer(Callback, 100, false).Repeat().Active();
+
+	function Callback()
+	{
+		c--;
+		ut.Assert(c >= 0, "Called after timer canceled");
+
+		if (c == 0)
+			{
+			tm.Active(false);
+
+			// Test complete after 1 second delay.
+			new mckoss.Timer(function () {ut.Async(false);}, 1000).Active();
+			}
+	}
+}).Async().Enable(true).Expect(0,20);
+
+ts.AddTest("Restart Timer", function(ut)
+{
+	var c = 0;
+	var tm = new mckoss.Timer(Start, 100).Active();
+	new mckoss.Timer(Eval, 500).Active();
+
+	function Start()
+	{
+		if (c == 0)
+			tm.Active();
+		c++;
+		ut.Assert(c <= 2, "Should just call twice");
+	}
+
+	function Eval()
+	{
+		ut.AssertEq(c, 2);
+		ut.Async(false);
+	}
+	
+}).Async().Expect(0,3);
+
+ts.Run();
+ts.ReportAsync();
+
+
+</SCRIPT>
+</BODY>
+</HTML>
+

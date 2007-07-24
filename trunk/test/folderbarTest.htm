@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<HEAD>
+<link rel="stylesheet" type="text/css" href="../styles/folderbar.css"/>
+<SCRIPT SRC="../script/base.js"></SCRIPT>
+<SCRIPT SRC="../script/timer.js"></SCRIPT>
+<SCRIPT SRC="../script/unit.js"></SCRIPT>
+<SCRIPT SRC="../script/folderbar.js"></SCRIPT>
+<SCRIPT>
+var ts = new mckoss.TestSuite();
+
+function TestAll()
+{
+	var rgstLabels = ["Folder 1", "Folder 2", "Folder 3"];
+	var fb;
+
+	ts.AddTest("Create Bar", function(ut)
+	{
+		fb = new mckoss.FolderBar(rgstLabels, Callback);
+
+		function Callback(iSel)
+		{
+			fb.divBody.innerHTML = "Callback on tab " + iSel;
+			fb.iSelCallback = iSel;
+		}
+
+		var divTarget = document.getElementById("divTarget");
+		var cT = divTarget.childNodes.length;
+		divTarget.appendChild(fb.BuildUI());
+		ut.AssertEq(divTarget.childNodes.length, cT+1);
+		ut.AssertEq(fb.iSelCallback, 0);
+
+		var node = divTarget.lastChild;
+		ut.AssertEq(node.tagName, "DIV");
+		ut.AssertEq(node.childNodes.length, 2);
+		node = node.childNodes[0];
+		ut.AssertEq(node.tagName, "DIV");
+
+		ut.AssertEq(node.className, "FolderBar");
+		ut.AssertEq(node.childNodes.length, rgstLabels.length);
+		
+		var i;
+		for (i = 0; i < rgstLabels.length ; i++)
+			{
+			var spn = node.childNodes[i];
+			ut.AssertEq(spn.nodeName, "SPAN");
+			ut.AssertEq(spn.className, i == 0 ? "TabSel" : "Tab");
+			ut.AssertEq(spn.childNodes.length, 1);
+			var txt = spn.childNodes[0];
+			ut.AssertEq(txt.nodeName, "#text");
+			ut.AssertEq(txt.data, rgstLabels[i]);
+			}
+
+		ut.AssertEq(fb.divBody.nodeName, "DIV");
+		ut.AssertEq(fb.divBody.className, "FolderBody");
+	});
+
+	ts.AddTest("Selection", function(ut)
+	{
+		ut.Assert(fb, "Folder Bar created");
+
+		try { fb.Select(7); }
+		catch (e) { ut.AssertException(e, "FolderBar"); }
+		finally { ut.AssertThrown(); }
+		
+		try { fb.Select(-1); }
+		catch (e) { ut.AssertException(e, "FolderBar"); }
+		finally { ut.AssertThrown(); }
+
+		fb.Select(1);
+		ut.AssertEq(fb.Selected(), 1);
+		ut.AssertEq(fb.iSelCallback, 1);
+		var i;
+		for (i = 0; i < rgstLabels.length ; i++)
+			{
+			var spn = fb.divBar.childNodes[i];
+			ut.AssertEq(spn.nodeName, "SPAN");
+			ut.AssertEq(spn.className, i == 1 ? "TabSel" : "Tab");
+			ut.AssertEq(spn.childNodes.length, 1);
+			var txt = spn.childNodes[0];
+			ut.AssertEq(txt.nodeName, "#text");
+			ut.AssertEq(txt.data, rgstLabels[i]);
+			}
+	});
+
+	ts.AddTest("UI Selection", function(ut)
+	{
+		fb.fnSelect = UICallback;
+
+		function UICallback(iSel)
+		{
+			ut.AssertEq(iSel, 2);
+			ut.Async(false);
+
+			var i;
+			for (i = 0; i < rgstLabels.length ; i++)
+				{
+				var spn = fb.divBar.childNodes[i];
+				ut.AssertEq(spn.nodeName, "SPAN");
+				ut.AssertEq(spn.className, i == 2 ? "TabSel" : "Tab");
+				ut.AssertEq(spn.childNodes.length, 1);
+				var txt = spn.childNodes[0];
+				ut.AssertEq(txt.nodeName, "#text");
+				ut.AssertEq(txt.data, rgstLabels[i]);
+				}
+		}
+	}).Async(true);
+
+	ts.Run();
+	ts.ReportAsync();
+}
+
+</SCRIPT>
+</HEAD>
+<BODY onload="TestAll();">
+<h1>FolderBar Test Suite</h1>
+Select the 3rd tab to complete the test.
+<DIV ID=divTarget style="width:500px;">
+</DIV>
+</BODY>
+</HTML>
+
