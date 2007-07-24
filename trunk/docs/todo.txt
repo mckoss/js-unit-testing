@@ -1,0 +1,2 @@
+- Need to update copyright notice to reflect MIT license.
+- Add documentation on useage and samples.
