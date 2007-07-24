@@ -1,0 +1,181 @@
+<HTML>
+<head>
+<title>base.js Unit Tests</title>
+<SCRIPT SRC="../script/base.js"></SCRIPT>
+<SCRIPT SRC="../script/timer.js"></SCRIPT>
+<SCRIPT SRC="../script/unit.js"></SCRIPT>
+
+</head>
+<BODY>
+<h1><script>document.write(document.title);</script></h1>
+<SCRIPT>
+var DW = mckoss.DW;
+var StAttrQuoteInner = mckoss.StAttrQuoteInner;
+ts = new mckoss.TestSuite();
+ts.DWOutputDiv();
+</script>
+<SCRIPT src="../libraries/firebug/firebug.js"></SCRIPT>
+<script>
+ts.AddTest("OOP", function(ut)
+{
+	function Base()
+	{
+		this.x = 1;
+	}
+
+	Base.prototype.Double = function()
+	{
+		this.x *= 2;
+	}
+
+	var b = new Base;
+
+	ut.AssertEq(b.constructor.StName(), "Base");
+
+	var o1 = new Object;
+	ut.AssertEq(o1.constructor.StName(), "Object");
+
+	b.Double();
+	ut.AssertEq(b.x, 2);
+
+	function Child()
+	{
+		this.Base();
+		this.y = 1;
+	}
+	
+	Child.DeriveFrom(Base);
+
+	var c = new Child;
+
+	ut.AssertEq(c.y, 1);
+	ut.AssertEq(c.x, 1);
+	c.Double();
+	ut.AssertEq(c.x, 2);
+
+	Child2.DeriveFrom(Base);
+	function Child2()
+	{
+		this.Base();
+	}
+
+	Child2.Override(Child, "Double");
+	Child2.prototype.Double = function()
+	{
+		this.Child_Double();
+		this.Child_Double();
+	}
+
+	var c2 = new Child2;
+	ut.AssertFn(function(){return c2.x == 1;});
+	c2.Double();
+	ut.AssertEq(c2.x, 4);
+});
+
+ts.AddTest("FnCallback", function (ut)
+{
+	function Base()
+	{
+		this.x = 7;
+	}
+
+	Base.prototype.Double = function()
+	{
+		this.x *= 2;
+	}
+	
+	Base.prototype.Mult = function(x)
+	{
+	    this.x *= x;
+	}
+
+	var b = new Base;
+	var fn = b.Double.FnCallback(b);
+	fn();
+	ut.AssertEq(b.x, 14);
+	
+	var fn2 = b.Mult.FnCallback(b);
+	fn2(5);
+	ut.AssertEq(b.x, 70);
+	
+	var fn3 = b.Mult.FnCallbackSalt(b, 2);
+	fn3();
+	ut.AssertEq(b.x, 140);
+	
+});
+
+ts.AddTest("Named", function(ut)
+{
+	NBase.DeriveFrom(mckoss.Named);
+	function NBase()
+	{
+		this.Named();
+		this.x = 8;
+	}
+
+	var nb = new NBase();
+	var nb2 = new NBase();
+	ut.AssertEq(eval(nb.StNamed()), nb);
+	ut.AssertEq(eval(nb2.StNamed()), nb2);
+
+    ut.AssertEq(nb.StNamedPart(), "MCK_0");
+	ut.AssertEq(nb.StNamedPart("foo"), "MCK_0_foo");
+	ut.AssertEq(nb.StNamedPart("bar", 2), "MCK_0_bar_2");
+	ut.AssertEq(nb.StPartID("bazz", 7), 'ID="MCK_0_bazz_7"');
+
+	document.write("<DIV " + nb.StPartID("div") + ">Test Div</DIV>");
+	ut.AssertEq(nb.BoundPart("div").tagName, "DIV");
+});
+
+ts.AddTest("Quoting", function(ut)
+{
+	ut.AssertEq(StAttrQuoteInner("&and&"), "&amp;and&amp;");
+	ut.AssertEq(StAttrQuoteInner('"'), "&quot;");
+	ut.AssertEq(StAttrQuoteInner("'"), "&#39;");
+	ut.AssertEq(StAttrQuoteInner("Line1\r\nLine2"), "Line1&#13;&#10;Line2");
+});
+
+ts.AddTest("Browser", function(ut)
+{
+	ut.AssertEq(navigator.appName, mckoss.Browser.fIE ? "Microsoft Internet Explorer" : "Netscape");
+	ut.AssertEq(mckoss.Browser.version, mckoss.Browser.fIE ? 4 : 5);
+});
+
+ts.AddTest("NameSpace", function(ut)
+{
+    ut.Assert(mckoss != undefined, "mckoss default namespace not defined");
+    
+    // Creation of anonymous functions in a namespace, including derived classes
+    mckoss.NameSpace.Ensure("ns1");
+    
+    ns1.AddClass("Foo", mckoss.Named);
+    ut.AssertEq(ns1.Foo, mckoss.Named);
+    
+    ns1.AddClass("MyClass", function() {this.x = 7;});
+    ns1.MyClass.prototype.MyMethod = function(x) {this.x += x;}
+    
+    ns1.AddClass("MyClass2", function() {this.MyClass();});
+    ns1.MyClass2.DeriveFrom(ns1.MyClass);
+    ns1.MyClass2.Override(ns1.MyClass, "MyMethod");
+    ns1.MyClass2.prototype.MyMethod = function(x) {this.MyClass_MyMethod(x);  this.MyClass_MyMethod(x); };
+    
+    var mc = new ns1.MyClass2();
+    ut.AssertEq(mc.x, 7);
+    mc.MyMethod(3);
+    ut.AssertEq(mc.x, 13);
+    
+    mckoss.NameSpace.Ensure("foo.bar.baz");
+    ut.Assert(foo instanceof mckoss.NameSpace, "foo NameSpace not created");
+    ut.Assert(foo.bar instanceof mckoss.NameSpace, "foo.bar NameSpace not created");
+    ut.Assert(foo.bar.baz instanceof mckoss.NameSpace, "foo.bar.baz NameSpace not created");
+    
+    mckoss.NameSpace.Ensure("mckoss.fun");
+    ut.Assert(mckoss.fun instanceof mckoss.NameSpace, "mckoss.new NameSpace not created");
+}).Expect(0, 8);
+
+ts.Run();
+ts.Report();
+</SCRIPT>
+</BODY>
+</HTML>
+
