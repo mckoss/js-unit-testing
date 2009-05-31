@@ -5,3 +5,19 @@
 Javascript unit tests can be collected together in one or more html files.  A master unit test can also run tests in a separate file and report the summary of the results.
 
 = Formatting a Unit Test HTML file =
+
+{{{
+<html>
+<head>
+<title>unit.js Unit Test</title>
+<script src="unit.js"></script>
+<body>
+<script>
+ts = new UT.TestSuite();
+ts.DWOutputDiv();
+
+
+</script>
+</body>
+</html>
+}}}
