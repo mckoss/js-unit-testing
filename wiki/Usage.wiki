@@ -16,6 +16,20 @@ Javascript unit tests can be collected together in one or more html files.  A ma
 ts = new UT.TestSuite();
 ts.DWOutputDiv();
 
+ts.AddTest("Test Name", function(ut)
+{
+    <test code here>
+});
+
+ts.AddTest("Another Test Name", function(ut)
+{
+    <more test code here>
+});
+
+...
+
+ts.Run();
+ts.Report();
 
 </script>
 </body>
