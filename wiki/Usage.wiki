@@ -1,0 +1,7 @@
+#summary Documentation for using the JavaScript unit test framework.
+
+= Introduction =
+
+Javascript unit tests can be collected together in one or more html files.  A master unit test can also run tests in a separate file and report the summary of the results.
+
+= Formatting a Unit Test HTML file =
