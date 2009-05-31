@@ -6,6 +6,12 @@ Javascript unit tests can be collected together in one or more html files.  A ma
 
 = Formatting a Unit Test HTML file =
 
+Unit test files contain collections of named tests.  Each test executes javascript code interspersed with Assert calls to verify the expected results.
+
+The Unit test framework executes each of the tests in sequence, and displays the result within the test page.
+
+Each unit test file is structured like this example:
+
 {{{
 <html>
 <head>
