@@ -120,15 +120,18 @@ ut.*!AssertEq*(v1, v2, stNote) - Assert that the two values are equal.
 
 ut.*!AssertIdent*(v1, v2) - Assert that values are identical - objects point to the _same_ object instance.
 
-ut.*NEq*(v1, v2) - Assert two values are _not_ equal.
+ut.*!AssertNEq*(v1, v2) - Assert two values are _not_ equal.
 
-ut.*GT*(v1, v2) - Assert that v1 is greater than v2.
+ut.*!AssertGT*(v1, v2) - Assert that v1 is greater than v2.
 
-ut.*LT*(v1, v2) - Assert that v1 is less than v2.
+ut.*!AssertLT*(v1, v2) - Assert that v1 is less than v2.
 
-ut.*Fn*(fn) - Asserts that the value of the passed in function returns _true_.
+ut.*!AssertFn*(fn) - Asserts that the value of the passed in function returns _true_.
 
 ut.*!AssertThrows*(sType, function (ut) {...}) - Assert that the called function throws an exception of the given type, sType.
+
+ut.*!AssertContains*(obj, objHas) - Assert that _obj_ contains all of the properties of objHas.
+  This is a shallow object comparison.  It can be used for arrays or objects.
 
 ut.*!Async*(f=true, ms=10000) - Mark the current test as executing asynchronously.
   The test framework will not continue until the testing code calls ut.Async(false) (or
