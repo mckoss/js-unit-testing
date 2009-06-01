@@ -94,23 +94,15 @@ Summary: 1 failures out of 2 tests.
 }}}
 ---
 
-=Unit Test (UT) Classes and Function=
+=Unit Test (UT) Classes and Functions=
 
 *!TestSuite* - Class for creating a collection of unit tests.
 
-*_Methods_*:
+ts = new *UT.!TestSuite*("test name", function)
 
-*!AddTest*("Test Name", function)
+ts.*Run*()
 
-*Run*()
-
-*Report*()
-
-*_Example_*:
-
-{{{
-ts = new UT.TestSuite();
-}}}
+ts.*Report*()
 
 =Test Suite (TS)=
 
