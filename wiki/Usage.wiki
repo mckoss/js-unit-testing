@@ -138,6 +138,6 @@ ut.*Async*(f=true, ms=10000) - Mark the current test as executing asynchronously
   until the current timeout interval has expired).  By default, unit tests are given 10
   seconds (10,000 milliseconds) to execute before being abandoned.
 
-ut.*!AsyncSquence*([fn1, fn2, ..., !fnN]) - Call each of the test functions passed in the array.
+ut.*!AsyncSquence*({{{[fn1, fn2, ..., fnN]}}}) - Call each of the test functions passed in the array.
  Each fn(ut) must call ut.!NextFn() to advance to the next function (this allows the functions to be called asynchronously and await their results).
  The last call to !NextFn calls ut.Async(false) to complete the outer (Asynchronous) unit test.
