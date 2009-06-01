@@ -111,7 +111,15 @@ ts.*Report*() - Display the results of the tests (runs asynchronously to the tes
 
 ut.*Assert*(f, stNote1, stNote2) - If f is false, displays error string "N. [Trace] Note (Note2)"
 
-ut.*AssertEval*(sExp) - Asserts that the expression (string) evaluates to true.
+ut.*!AssertEval*(sExp) - Asserts that the expression (string) evaluates to true.
 
-ut.*AssertEq*(v1, v2, stNote) - Assert that the two values are equal.
- Can compare objects and arrays - but only tests top level (not deep) equality.
+ut.*!AssertEq*(v1, v2, stNote) - Assert that the two values are equal.
+ Can compare objects and arrays - but only tests top level (not deep) equality.  By convension, v1 is a computed value, and v2 is the expected (constant) value of the computation.
+
+ut.*!AssertIdent*(v1, v2) - Assert that values are identical - objects point to the _same_ object instance.
+
+ut.*!NEq*(v1, v2) - Assert two values are _not_ equal.
+
+ut.*!GT*(v1, v2) - Assert that v1 is greater than v2.
+
+ut.*!LT*(v1, v2) - Assert that v1 is less than v2.
