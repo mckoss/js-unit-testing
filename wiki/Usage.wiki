@@ -133,11 +133,11 @@ ut.*!AssertThrows*(sType, function (ut) {...}) - Assert that the called function
 ut.*!AssertContains*(obj, objHas) - Assert that _obj_ contains all of the properties of objHas.
   This is a shallow object comparison.  It can be used for arrays or objects.
 
-ut.*!Async*(f=true, ms=10000) - Mark the current test as executing asynchronously.
+ut.*Async*(f=true, ms=10000) - Mark the current test as executing asynchronously.
   The test framework will not continue until the testing code calls ut.Async(false) (or
   until the current timeout interval has expired).  By default, unit tests are given 10
   seconds (10,000 milliseconds) to execute before being abandoned.
 
-ut.*!AsyncSquence*([fn1, fn2, ..., fnN]) - Call each of the test functions passed in the array.
- Each fn(ut) must call ut.NextFn() to advance to the next function (this allows the functions to be called asynchronously and await their results).
- The last call to NextFn calls ut.Async(false) to complete the outer (Asynchronous) unit test.
+ut.*!AsyncSquence*([fn1, fn2, ..., !fnN]) - Call each of the test functions passed in the array.
+ Each fn(ut) must call ut.!NextFn() to advance to the next function (this allows the functions to be called asynchronously and await their results).
+ The last call to !NextFn calls ut.Async(false) to complete the outer (Asynchronous) unit test.
