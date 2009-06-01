@@ -98,8 +98,9 @@ Summary: 1 failures out of 2 tests.
 
 *!TestSuite* - Class for creating a collection of unit tests.
 
-ts = new *UT.!TestSuite*() - 
-A !TestSuite contains a collection of unit test functions.
+ts = new *UT.!TestSuite*() - A !TestSuite contains a collection of unit test functions.
+
+ts.!DWOutputDiv() - document.write a '<div>' into the file which will contain the test report output.
 
 ts.*!AddTest*("test name", function(ut) {...}) - Add a test function to the !TestSuite.  When run, the unit text context, _ut_, is passed in.
  Returns a unit-test context object, ut (see below).
