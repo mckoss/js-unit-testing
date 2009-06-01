@@ -73,9 +73,11 @@ ts.Report();
 }}}
 
 This results in the following in-page report:
-
+---
 ==Example Unit Test==
+{{{
 Unit Test Output
+
 1. PASS [All Pass] 0 errors out of 6 tests
 2. FAIL [All Fail] 11 errors out of 11 tests
 Failed: 1. undefined
@@ -90,3 +92,4 @@ Failed: 9.
 Failed: 10.
 Failed: 11. Exception: ReferenceError (IllegalFunction is not defined) @ line 49
 Summary: 1 failures out of 2 tests.
+}}}
