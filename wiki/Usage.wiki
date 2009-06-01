@@ -100,7 +100,7 @@ Summary: 1 failures out of 2 tests.
 
 *_Methods_*:
 
-*AddTest("Test Name", function)*
+*!AddTest("Test Name", function)*
 
 *_Example_*:
 
