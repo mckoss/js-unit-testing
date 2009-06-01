@@ -103,6 +103,15 @@ A !TestSuite contains a collection of unit test functions.
 
 ts.*!AddTest*("test name", function(ut) {...}) - Add a test function to the !TestSuite.  When run, the unit text context, _ut_, is passed in.
 
-ts.*Run*() - Run all the tests in the Suite.
+ts.*Run*() - Run all the tests in the suite.
 
 ts.*Report*() - Display the results of the tests (runs asynchronously to the tests running).
+
+=Unit Test context functions=
+
+ut.*Assert*(f, stNote1, stNote2) - If f is false, displays error string "N. [Trace] Note (Note2)"
+
+ut.*AssertEval*(sExp) - Asserts that the expression (string) evaluates to true.
+
+ut.*AssertEq*(v1, v2, stNote) - Assert that the two values are equal.
+ Can compare objects and arrays - but only tests top level (not deep) equality.
