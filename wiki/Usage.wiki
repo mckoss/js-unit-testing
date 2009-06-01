@@ -15,24 +15,54 @@ Each unit test file is structured like this example:
 {{{
 <html>
 <head>
-<title>unit.js Unit Test</title>
+<title>Example Unit Test</title>
 <script src="unit.js"></script>
 <body>
+<h1><script>document.write(document.title);</script></h1>
 <script>
+
+function Sample()
+{
+	this.x = 1;
+}
+
+Sample.prototype.Double = function()
+{
+	this.x *= 2;
+}
+
 ts = new UT.TestSuite();
 ts.DWOutputDiv();
 
-ts.AddTest("Test Name", function(ut)
+ts.AddTest("All Pass", function(ut)
 {
-    <test code here>
+	var s = new Sample();
+	ut.Assert(s.x == 1, "Constructor");
+	s.Double();
+	ut.Assert(s.x == 2, "Double Test 1");
+	s.x = 10;
+	s.Double();
+	ut.Assert(s.x == 20, "Double Test 2");
+	ut.AssertEval("1+1==2");
+	ut.AssertGT(2, 1);
+	ut.AssertGT("Z", "A");
 });
 
-ts.AddTest("Another Test Name", function(ut)
+ts.AddTest("All Fail", function(ut)
 {
-    <more test code here>
+	ut.Assert(false);
+	ut.AssertEval("1+1 == 3");
+	ut.AssertEq(1, 2);
+	ut.AssertNEq("hello", "hello");
+	ut.AssertGT(1, 2);
+	ut.AssertGT(undefined, 2);
+	ut.AssertGT("A", "Z");
+	var x = 7;
+	ut.AssertFn(function () { return x != 7; });
+	ut.AssertFn(new Function);
+	ut.AssertFn(function () { });
+	IllegalFunction();
 });
-
-...
 
 ts.Run();
 ts.Report();
@@ -41,3 +71,22 @@ ts.Report();
 </body>
 </html>
 }}}
+
+This results in the following in-page report:
+
+==Example Unit Test==
+Unit Test Output
+1. PASS [All Pass] 0 errors out of 6 tests
+2. FAIL [All Fail] 11 errors out of 11 tests
+Failed: 1. undefined
+Failed: 2. 1+1 == 3
+Failed: 3. 1 == 2 (type: number)
+Failed: 4. hello != hello
+Failed: 5. 1 > 2
+Failed: 6. undefined > 2
+Failed: 7. A > Z
+Failed: 8. return x != 7;
+Failed: 9.
+Failed: 10.
+Failed: 11. Exception: ReferenceError (IllegalFunction is not defined) @ line 49
+Summary: 1 failures out of 2 tests.
