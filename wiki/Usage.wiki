@@ -102,6 +102,7 @@ ts = new *UT.!TestSuite*() -
 A !TestSuite contains a collection of unit test functions.
 
 ts.*!AddTest*("test name", function(ut) {...}) - Add a test function to the !TestSuite.  When run, the unit text context, _ut_, is passed in.
+ Returns a unit-test context object, ut (see below).
 
 ts.*Run*() - Run all the tests in the suite.
 
@@ -118,8 +119,21 @@ ut.*!AssertEq*(v1, v2, stNote) - Assert that the two values are equal.
 
 ut.*!AssertIdent*(v1, v2) - Assert that values are identical - objects point to the _same_ object instance.
 
-ut.*!NEq*(v1, v2) - Assert two values are _not_ equal.
+ut.*NEq*(v1, v2) - Assert two values are _not_ equal.
 
-ut.*!GT*(v1, v2) - Assert that v1 is greater than v2.
+ut.*GT*(v1, v2) - Assert that v1 is greater than v2.
 
-ut.*!LT*(v1, v2) - Assert that v1 is less than v2.
+ut.*LT*(v1, v2) - Assert that v1 is less than v2.
+
+ut.*Fn*(fn) - Asserts that the value of the passed in function returns _true_.
+
+ut.*!AssertThrows*(sType, function (ut) {...}) - Assert that the called function throws an exception of the given type, sType.
+
+ut.*!Async*(f=true, ms=10000) - Mark the current test as executing asynchronously.
+  The test framework will not continue until the testing code calls ut.Async(false) (or
+  until the current timeout interval has expired).  By default, unit tests are given 10
+  seconds (10,000 milliseconds) to execute before being abandoned.
+
+ut.*!AsyncSquence*([fn1, fn2, ..., fnN]) - Call each of the test functions passed in the array.
+ Each fn(ut) must call ut.NextFn() to advance to the next function (this allows the functions to be called asynchronously and await their results).
+ The last call to NextFn calls ut.Async(false) to complete the outer (Asynchronous) unit test.
