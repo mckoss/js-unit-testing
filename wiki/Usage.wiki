@@ -101,7 +101,7 @@ Summary: 1 failures out of 2 tests.
 ts = new *UT.!TestSuite*() - 
 A !TestSuite contains a collection of unit test functions.
 
-ts.*!AddTest*("test name", test-function) - Add a test function to the !TestSuite
+ts.*!AddTest*("test name", function(ut) {...}) - Add a test function to the !TestSuite.  When run, the unit text context, _ut_, is passed in.
 
 ts.*Run*() - Run all the tests in the Suite.
 
