@@ -141,3 +141,5 @@ ut.*Async*(f=true, ms=10000) - Mark the current test as executing asynchronously
 ut.*!AsyncSquence*({{{[fn1, fn2, ..., fnN]}}}) - Call each of the test functions passed in the array.
  Each fn(ut) must call ut.!NextFn() to advance to the next function (this allows the functions to be called asynchronously and await their results).
  The last call to !NextFn calls ut.Async(false) to complete the outer (Asynchronous) unit test.
+
+ut.*!FnWrap*(fn) - Wrap a function call to catch possible exceptions and report them in the error framwork.
