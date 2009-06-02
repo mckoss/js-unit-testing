@@ -105,6 +105,8 @@ ts.*DWOutputDiv*() - document.write a `<div>` into the file which will contain t
 ts.*!AddTest*("test name", function(ut) {...}) - Add a test function to the !TestSuite.  When run, the unit text context, _ut_, is passed in.
  Returns a unit-test context object, ut (see below).
 
+ts.*!SkipTo*(i) - Start at the ith (1-based) test rather than start at the beginning.
+
 ts.*Run*() - Run all the tests in the suite.
 
 ts.*Report*() - Display the results of the tests (runs asynchronously to the tests running).
